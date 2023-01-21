@@ -29,7 +29,6 @@ DisasterResponse.db -> sqlite database as saved by running process_data.py
 
 #### Folder: models
 train_classifier.py -> Python code to read in the data from the database in the data folder and train a classifier model on it
-classifier_model.pickle -> the opimized classifier model 
 
 #### Folder: app
 subfolder templates -> templates for the web app
