@@ -37,6 +37,8 @@ run.py -> python code to run the web ap with flask
 ### Installation
 The code was written on Python 3.8.
 
+The code can be found in this Github Repo https://github.com/anni-kaffeekanni/DisasterResponsePipeline
+
 ### Instructions:
 1. Run the following commands in the project's root directory to set up your database and model.
 
