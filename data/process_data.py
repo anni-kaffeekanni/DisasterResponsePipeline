@@ -7,6 +7,7 @@ Created on Sun Jan 15 17:20:59 2023
 
 import sys
 import pandas as pd
+import numpy as np
 from sqlalchemy import create_engine, inspect
 
 
@@ -59,6 +60,13 @@ def clean_data(df):
         categories[column] = categories[column].str.strip('-'+column)
         categories[column] = categories[column].astype(int)
 
+    print(categories.head())
+
+    # 3. Filter out all rows in the categories df, that have no binary entry
+    categories = pd.DataFrame(data=np.where(categories.values >=1,1,0), columns=categories.columns)
+
+    print(categories.head())
+
     df = pd.concat([df.drop(columns=['categories']),categories], axis=1)
     
     return df
@@ -88,8 +96,8 @@ def main():
         
     elif len(sys.argv) == 1: 
         
-        messages_filepath = 'data\\messages.csv'
-        categories_filepath = 'data\\categories.csv' 
+        messages_filepath = 'messages.csv'
+        categories_filepath = 'categories.csv'
         
         database_filepath = 'DisasterResponse'
         
