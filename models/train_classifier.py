@@ -54,11 +54,12 @@ def load_data(database_filepath):
     engine = create_engine(f'sqlite:///{database_filepath}.db')
     
     df = pd.read_sql_table('messages_dataset', engine)
+
     X = df['message']
     Y = df[df.columns[4:]]
     category_names=Y.columns
-    
-    return(X, Y.values, category_names)
+
+    return(X, Y, category_names)
 
 def tokenize(text):
     ''' This function tokenizes the text content of a message by normalizing, splitting into single words,
@@ -71,7 +72,7 @@ def tokenize(text):
             stemmed_tokens: a list of the retrieved tokens
     '''
     
-    text= re.sub(r'[^\w\s]', '',text.lower())
+    text = re.sub(r'[^\w\s]', '',text.lower())
     
     tokens = word_tokenize(text)
     
@@ -89,7 +90,7 @@ def build_model():
         Args: None
         Returns: cv: GridSearchCV model
     '''
-    
+
     pipeline = Pipeline([('vect',CountVectorizer(tokenizer=tokenize)),('tfidf',TfidfTransformer()),
                     ('clf', MultiOutputClassifier(RandomForestClassifier()))
                     ])
@@ -98,9 +99,9 @@ def build_model():
               'clf__estimator__min_samples_split': [2, 3, 4]
              }
 
-    cv = GridSearchCV(pipeline, param_grid=parameters)
+    #cv = GridSearchCV(pipeline, param_grid=parameters)
     
-    #cv = pipeline # bypass GridSearchCV model
+    cv = pipeline # bypass GridSearchCV model
     
     return cv
 
@@ -158,9 +159,11 @@ def main():
     if valid_input_data:
 
         print('Loading data...\n    DATABASE: {}'.format(database_filepath))
+
         X, Y, category_names = load_data(database_filepath)
-        X_train, X_test, Y_train, Y_test = train_test_split(X, Y, test_size=0.2) #originaly test_size = 0.2
-        
+
+        X_train, X_test, Y_train, Y_test = train_test_split(X, Y, test_size=0.2, random_state=42) #originaly test_size = 0.2
+
         print('Building model...')
         model = build_model()
         
@@ -168,10 +171,10 @@ def main():
         model.fit(X_train, Y_train)
         
         print('Evaluating model...')
-        evaluate_model(model, X_test, Y_test, category_names)
+        #evaluate_model(model, X_test, Y_test, category_names)
 
         print('Saving model...\n    MODEL: {}'.format(model_filepath))
-        save_model(model, model_filepath)
+        #save_model(model, model_filepath)
 
         print('Trained model saved!')
 
